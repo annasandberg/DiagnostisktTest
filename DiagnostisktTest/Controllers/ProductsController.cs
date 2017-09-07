@@ -46,8 +46,20 @@ namespace DiagnostisktTest.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["ProductCategories"] = new SelectList(_context.ProductCategories, "ProductCategoryId", "Name");
-
+            //ViewData["ProductCategories"] = new SelectList(_context.ProductCategories.OrderBy(x => x.Name), "ProductCategoryId", "Name");
+            ViewBag.ProductCategories = new List<SelectListItem>{ new SelectListItem{
+                Text="VHS",
+                Value = "1"
+            },
+            new SelectListItem{
+                Text="TV",
+                Value = "2"
+            },
+            new SelectListItem
+            {
+                Text = "DVD",
+                Value = "3"
+            } };
             return View();
         }
 
@@ -76,7 +88,19 @@ namespace DiagnostisktTest.Controllers
             }
 
             var product = await _context.Products.SingleOrDefaultAsync(m => m.ProductId == id);
-            ViewData["ProductCategories"] = new SelectList(_context.ProductCategories, "ProductCategoryId", "Name");
+            ViewBag.ProductCategories = new List<SelectListItem>{ new SelectListItem{
+                Text="VHS",
+                Value = "1"
+            },
+            new SelectListItem{
+                Text="TV",
+                Value = "2"
+            },
+            new SelectListItem
+            {
+                Text = "DVD",
+                Value = "3"
+            } };
             if (product == null)
             {
                 return NotFound();
