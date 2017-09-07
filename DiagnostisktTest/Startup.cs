@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using DiagnostisktTest.Data;
 using DiagnostisktTest.Models;
 using DiagnostisktTest.Services;
+using Microsoft.Extensions.Logging;
 
 namespace DiagnostisktTest
 {
@@ -44,8 +45,11 @@ namespace DiagnostisktTest
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
