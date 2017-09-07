@@ -46,6 +46,8 @@ namespace DiagnostisktTest.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
+            ViewData["ProductCategories"] = new SelectList(_context.ProductCategories, "ProductCategoryId", "Name");
+
             return View();
         }
 
@@ -74,6 +76,7 @@ namespace DiagnostisktTest.Controllers
             }
 
             var product = await _context.Products.SingleOrDefaultAsync(m => m.ProductId == id);
+            ViewData["ProductCategories"] = new SelectList(_context.ProductCategories, "ProductCategoryId", "Name");
             if (product == null)
             {
                 return NotFound();
