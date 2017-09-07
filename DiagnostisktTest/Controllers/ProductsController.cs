@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DiagnostisktTest.Data;
 using DiagnostisktTest.Models;
 using Microsoft.Extensions.Logging;
+using DiagnostisktTest.Services;
 
 namespace DiagnostisktTest.Controllers
 {
@@ -15,11 +16,13 @@ namespace DiagnostisktTest.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<ProductsController> _logger;
+        private readonly ProductCategoryService _categoryService;
 
-        public ProductsController(ApplicationDbContext context, ILogger<ProductsController> logger)
+        public ProductsController(ApplicationDbContext context, ILogger<ProductsController> logger, ProductCategoryService categoryService)
         {
             _context = context;
             _logger = logger;
+            _categoryService = categoryService;
         }
 
         // GET: Products
@@ -50,20 +53,7 @@ namespace DiagnostisktTest.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            //ViewData["ProductCategories"] = new SelectList(_context.ProductCategories.OrderBy(x => x.Name), "ProductCategoryId", "Name");
-            ViewBag.ProductCategories = new List<SelectListItem>{ new SelectListItem{
-                Text="VHS",
-                Value = "1"
-            },
-            new SelectListItem{
-                Text="TV",
-                Value = "2"
-            },
-            new SelectListItem
-            {
-                Text = "DVD",
-                Value = "3"
-            } };
+            ViewBag.ProductCategories = _categoryService.GetSelectList();
             return View();
         }
 
@@ -72,7 +62,7 @@ namespace DiagnostisktTest.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,Name,Price")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,Name,Price,ProductCategoryId")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -92,19 +82,7 @@ namespace DiagnostisktTest.Controllers
             }
 
             var product = await _context.Products.SingleOrDefaultAsync(m => m.ProductId == id);
-            ViewBag.ProductCategories = new List<SelectListItem>{ new SelectListItem{
-                Text="VHS",
-                Value = "1"
-            },
-            new SelectListItem{
-                Text="TV",
-                Value = "2"
-            },
-            new SelectListItem
-            {
-                Text = "DVD",
-                Value = "3"
-            } };
+            ViewBag.ProductCategories = _categoryService.GetSelectList();
             if (product == null)
             {
                 return NotFound();
@@ -117,7 +95,7 @@ namespace DiagnostisktTest.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,Name,Price")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,Name,Price,ProductCategoryId")] Product product)
         {
             if (id != product.ProductId)
             {
